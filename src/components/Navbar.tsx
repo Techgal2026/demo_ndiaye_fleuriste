@@ -19,16 +19,152 @@ interface NavLink {
   hasDropdown?: boolean;
 }
 
+// Structure des catégories de soins
+const SERVICES_OPTIONS = [
+  {
+    category: "Hammam & Forfaits Duos",
+    services: [
+      "Hammam Classique - 35.000 F",
+      "Hammam + Enveloppement - 60.000 F",
+      "Hammam + Rhassoul - 60.000 F",
+      "Jacuzzi (15mn) - 20.000 F",
+      "Hammam duo - 65.000 F",
+      "Hammam + Enveloppement Duo - 115.000 F",
+      "Hammam + Massage Duo - 125.000 F",
+      "Hammam + Massage + Pédicure Duo - 145.000 F",
+      "Hammam + Massage + Pédicure-Manucure Duo - 155.000 F",
+      "Hammam + Enveloppement + Massage Duo - 175.000 F",
+      "Hammam + Massage + Soin de visage Duo - 185.000 F",
+      "Gommage corps + Massage Duo - 95.000 F",
+      "Gommage corps + Massage + Enveloppement Duo - 145.000 F",
+    ],
+  },
+  {
+    category: "Massages Relaxants & Cures",
+    services: [
+      "Massage Bien être - 30.000 F",
+      "Massage Californien - 35.000 F",
+      "Massage Anti-Stress - 30.000 F",
+      "Massage Tonique - 35.000 F",
+      "Pierre chaude relaxant - 35.000 F",
+      "Pierre chaude tonique - 40.000 F",
+      "Serviette chaude - 35.000 F",
+      "Serviette chaude tonique - 40.000 F",
+      "Massage Amincissant - 30.000 F",
+      "Madero thérapie - 35.000 F",
+      "Lipocavitation - 35.000 F",
+      "Massage Thérapeutique - 50.000 F",
+      "Massage dos (30mn) - 20.000 F",
+      "Drainage jambe lourde (30mn) - 20.000 F",
+      "Drainage corps - 50.000 F",
+      "Cure 10 séances post-opération - 250.000 F",
+      "Cure 10 séances amincissant - 250.000 F",
+      "Cure 10 séances lipocavitation - 300.000 F",
+      "Cure 10 séances madero thérapie - 300.000 F",
+    ],
+  },
+  {
+    category: "Gommages & Enveloppements",
+    services: [
+      "Gommage (Sable, Pierre, Café, Sel agrume, Fleur d'oranger, Coco argan) - 20.000 F",
+      "Gommage Vitamine C - 30.000 F",
+      "Gommage 4*4 Gold - 35.000 F",
+      "Gommage Éclaircissant - 50.000 F",
+      "Enveloppement Argile / Rhassoul / Fruits rouges - 25.000 F",
+      "Enveloppement Nila - 30.000 F",
+      "Enveloppement Poudre d'or - 30.000 F",
+    ],
+  },
+  {
+    category: "Soins de Visage",
+    services: [
+      "Soin Classic - 30.000 F",
+      "Soin Hydra Facial - 50.000 F",
+      "Soin Vitamine C - 35.000 F",
+      "Shaker Extrait de carottes glow - 50.000 F",
+      "Shaker Sublime or - 50.000 F",
+      "Shaker Anti-pollution - 45.000 F",
+      "Thermique Antitaches - 50.000 F",
+      "Feuille Collagène Éclat - 50.000 F",
+      "Soin Peeling (Anti-acné / Anti-tache) - 50.000 F",
+      "Soin BB Glow - 50.000 F",
+      "Dermaplaning - 50.000 F",
+      "Microdermabrasion - 50.000 F",
+      "Soin Microneedling - 60.000 F",
+      "Soin Pureté aux herbes aromatiques - 50.000 F",
+      "Shaker Concombre - 45.000 F",
+    ],
+  },
+  {
+    category: "Pédicure & Manucure",
+    services: [
+      "Manucure Sans Vernis - 5.000 F",
+      "Manucure Hydratation - 10.000 F",
+      "Manucure Éclaircisante - 10.000 F",
+      "Pédicure Hydratation - 15.000 F",
+      "Pédicure Paraffine Lavande - 18.000 F",
+      "Pédicure / Manucure - 15.000 F",
+      "Pédicure / Manucure Vernis Simple - 18.000 F",
+      "Pédicure / Manucure Henné - 20.000 F",
+      "Pédicure Anti-crevasse - 25.000 F",
+      "Pédicure Thérapeutique - 25.000 F",
+      "Manucure avec Semi-Permanent - 10.000 F",
+      "Pédicure avec Semi-Permanent - 15.000 F",
+      "Pédicure / Manucure Semi-Permanent - 25.000 F",
+      "Pose Capsule Faux Ongle + Vernis Simple - 13.000 F",
+      "Pose Capsule Faux Ongle + Semi-Permanent - 15.000 F",
+      "Manucure / Pédicure Homme - 8.000 F à 25.000 F",
+    ],
+  },
+  {
+    category: "Onglerie & Dépose",
+    services: [
+      "Décoration Ongle - 3.000 F",
+      "Pose Gel sur ongle naturel - 10.000 F",
+      "Pose Gel/Résine/Chablon + Semi-Permanent - 15.000 F",
+      "Pose Gel/Résine + Capsule Faux Ongle + Semi-Permanent - 25.000 F",
+      "Remplissage gel ou résine - 20.000 F",
+      "Dépose Semi-Permanent - 3.000 F",
+      "Dépose Capsule Faux Ongle - 5.000 F",
+      "Dépose Gel / Résine / Chablon - 10.000 F",
+    ],
+  },
+  {
+    category: "Épilations (Cire / Laser)",
+    services: [
+      "Épilation Cire Femme (Sorcils, Visage, Aisselles, Maillot, Jambes...)",
+      "Forfait Corps Cire Femme - 30.000 F à 45.000 F",
+      "Épilation Homme - 5.000 F à 20.000 F",
+      "Épilation Laser (Zone au choix)",
+      "Forfait Laser (Combinaisons zones)",
+    ],
+  },
+  {
+    category: "Extension de Cils & Teinture",
+    services: [
+      "Extension de cils Classic - 35.000 F",
+      "Rehaussement des cils - 35.000 F",
+      "Volume russe - 50.000 F",
+      "Méga volume russe - 60.000 F",
+      "Remplissage 15 jours - 20.000 F",
+      "Teinture cils - 8.000 F",
+      "Henné brown sans épilation - 15.000 F",
+      "Épilation sourcils + Henné brown - 20.000 F",
+    ],
+  },
+];
+
 const Nav: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // États du formulaire de réservation mis à jour
+  // États du formulaire de réservation
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
     email: "",
+    selectedService: "",
     hasInsurance: "Non",
     isNewPatient: "Oui",
     date: "",
@@ -36,7 +172,7 @@ const Nav: React.FC = () => {
     notes: "",
   });
 
-  const phoneNumber = "221776913230"; // Format international pour l'API WhatsApp
+  const phoneNumber = "221776913230"; // Format international WhatsApp
   const displayPhone = "77 691 32 30";
 
   const navLinks: NavLink[] = [
@@ -81,12 +217,13 @@ const Nav: React.FC = () => {
       `👤 *Nom complet :* ${formData.fullName}\n` +
       `📞 *Téléphone :* ${formData.phone}\n` +
       `✉️ *Email :* ${formData.email || "Non renseigné"}\n` +
+      `💅 *Soin choisi :* ${formData.selectedService || "Non spécifié"}\n` +
       `🛡️ *Assurance :* ${formData.hasInsurance}\n` +
       `🆕 *Nouveau patient :* ${formData.isNewPatient}\n` +
       `📅 *Date souhaitée :* ${formData.date}\n` +
       `⏰ *Heure souhaitée :* ${formData.time}\n` +
       (formData.notes ? `📝 *Notes :* ${formData.notes}\n\n` : `\n`) +
-      `Merci de confirmer la disponibilité !`;
+      `Merci de me confirmer la disponibilité !`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
@@ -100,6 +237,7 @@ const Nav: React.FC = () => {
       fullName: "",
       phone: "",
       email: "",
+      selectedService: "",
       hasInsurance: "Non",
       isNewPatient: "Oui",
       date: "",
@@ -391,6 +529,32 @@ const Nav: React.FC = () => {
                     onChange={handleChange}
                   />
                 </div>
+              </div>
+
+              {/* Sélection du soin */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Choisir un soin *</label>
+                <select
+                  name="selectedService"
+                  required
+                  className="input-field"
+                  value={formData.selectedService}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Sélectionnez un soin --</option>
+                  {SERVICES_OPTIONS.map((group, idx) => (
+                    <optgroup key={idx} label={group.category}>
+                      {group.services.map((service, sIdx) => (
+                        <option key={sIdx} value={service}>
+                          {service}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                  <option value="Autre / Soin personnalisé">
+                    Autre / Soin sur-mesure (Préciser en notes)
+                  </option>
+                </select>
               </div>
 
               {/* Question Assurance */}
