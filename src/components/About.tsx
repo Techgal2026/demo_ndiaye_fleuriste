@@ -1,572 +1,380 @@
+
 "use client";
 
-import React from "react";
-import { Play, Sparkles, HeartHandshake } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 const About: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    const currentSection = sectionRef.current;
+
+    if (currentSection) {
+      observer.observe(currentSection);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div style={styles.pageWrapper}>
+    <section
+      ref={sectionRef}
+      className="about-section"
+      style={styles.section}
+    >
       <style>{`
-        /* Styles Responsive Media Queries */
+        /* Animation d'apparition */
+        .animate-fade-up {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s ease-out,
+                      transform 0.8s ease-out;
+        }
+
+        .animate-fade-up.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Délais des animations */
+        .delay-1 {
+          transition-delay: 0.2s;
+        }
+
+        .delay-2 {
+          transition-delay: 0.4s;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fade-up,
+          .animate-fade-up.visible {
+            opacity: 1;
+            transform: none;
+            transition: none;
+          }
+        }
+
+        /* Tablettes */
         @media (max-width: 1024px) {
           .about-container {
             flex-direction: column !important;
-            gap: 40px !important;
+            gap: 60px !important;
           }
+
+          .about-left-column,
+          .about-right-column {
+            width: 100% !important;
+          }
+
           .about-right-column {
             padding-left: 0 !important;
           }
-          .story-container {
-            flex-direction: column !important;
-            gap: 40px !important;
-          }
-          .story-text-card {
-            width: 100% !important;
-            box-sizing: border-box !important;
-            padding: 40px 30px !important;
-          }
-          .story-button {
-            transform: translateY(0) !important;
-            margin-top: 15px !important;
-          }
-          .story-section {
-            padding: 60px 20px 100px 20px !important;
-          }
-          .story-image-collage {
-            margin-left: 0 !important;
-            width: 100% !important;
-            height: 480px !important;
+
+          .about-left-column {
+            max-width: 650px;
+            margin: 0 auto;
           }
         }
 
-        @media (max-width: 768px) {
+        /* Mobiles */
+        @media (max-width: 640px) {
           .about-section {
-            padding: 50px 20px !important;
+            padding: 60px 20px !important;
           }
-          .video-card {
-            flex-direction: column !important;
-          }
-          .video-thumbnail {
-            width: 100% !important;
-            height: 200px !important;
-          }
-          .video-card-content {
-            width: 100% !important;
-            box-sizing: border-box !important;
-            padding: 20px !important;
-          }
-          .features-grid {
-            flex-direction: column !important;
-            gap: 25px !important;
-          }
-          .main-title, .story-title {
-            font-size: 28px !important;
-          }
-          .story-section {
-            padding: 50px 20px 120px 20px !important;
-          }
-          .story-image-collage {
+
+          .main-image-wrapper {
             height: 420px !important;
-            position: relative !important;
-            width: 100% !important;
-            margin-top: 20px !important;
           }
-          .photo-top-left {
-            top: 0 !important;
-            left: 0 !important;
-            width: 58% !important;
-            height: 220px !important;
+
+          .overlay-image-card {
+            width: 220px !important;
+            height: 140px !important;
+            left: -10px !important;
+            bottom: 40px !important;
           }
-          .photo-right {
-            top: 40px !important;
-            right: 0 !important;
-            width: 58% !important;
-            height: 240px !important;
-          }
-          .photo-bottom-center {
-            bottom: 0 !important;
-            left: 20% !important;
-            width: 60% !important;
-            height: 210px !important;
+
+          .main-title {
+            font-size: 32px !important;
           }
         }
 
-        @media (max-width: 480px) {
-          .story-section {
-            padding: 40px 15px 110px 15px !important;
+        /* Petits mobiles */
+        @media (max-width: 380px) {
+          .main-image-wrapper {
+            height: 340px !important;
           }
-          .signature-row {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 15px !important;
+
+          .overlay-image-card {
+            width: 185px !important;
+            height: 120px !important;
           }
-          .story-text-card {
-            padding: 25px 20px !important;
-          }
-          .story-button {
-            width: 100% !important;
-            text-align: center !important;
-          }
-          .story-image-collage {
-            height: 350px !important;
-          }
-          .photo-top-left {
-            height: 180px !important;
-          }
-          .photo-right {
-            height: 200px !important;
-          }
-          .photo-bottom-center {
-            height: 180px !important;
+
+          .main-title {
+            font-size: 28px !important;
           }
         }
       `}</style>
 
-      {/* SECTION 1: À Propos de Secret Beauty & Spa */}
-      <section className="about-section" style={styles.section}>
-        <div className="about-container" style={styles.container}>
-          {/* Colonne Gauche - Cartes & Caractéristiques */}
-          <div style={styles.leftColumn}>
-            {/* Carte Vidéo "Soins d'Exception" */}
-            <div className="video-card" style={styles.videoCard}>
-              <div className="video-thumbnail" style={styles.videoThumbnail}>
-                <img
-                  src="/ab.jpg"
-                  alt="Soins d'Exception Secret Beauty & Spa"
-                  style={styles.thumbnailImage}
-                />
-                <button
-                  style={styles.playButton}
-                  aria-label="Regarder la présentation"
-                >
-                  <Play
-                    size={20}
-                    fill="#2A2421"
-                    color="#2A2421"
-                    style={{ marginLeft: "3px" }}
-                  />
-                </button>
-              </div>
-              <div
-                className="video-card-content"
-                style={styles.videoCardContent}
-              >
-                <h3 style={styles.cardTitle}>Soins & Relaxation</h3>
-                <p style={styles.cardText}>
-                  Une sélection rigoureuse de produits haut de gamme et de
-                  techniques apaisantes pour sublimer votre peau au quotidien.
-                </p>
-                <a href="#services" style={styles.readMoreLink}>
-                  EN SAVOIR PLUS
-                </a>
-              </div>
-            </div>
-
-            {/* Grille des 2 sous-fonctionnalités */}
-            <div className="features-grid" style={styles.featuresGrid}>
-              {/* Produits & Soins Bio */}
-              <div style={styles.featureItem}>
-                <div style={styles.iconWrapper}>
-                  <Sparkles size={36} color="#B88E7D" strokeWidth={1.2} />
-                </div>
-                <h4 style={styles.featureTitle}>Éclat & Pureté</h4>
-                <p style={styles.featureText}>
-                  Des protocoles de soins ciblés pour revitaliser le teint et
-                  apporter une fraîcheur naturelle durable.
-                </p>
-                <a href="#" style={styles.readMoreLink}>
-                  EN SAVOIR PLUS
-                </a>
-              </div>
-
-              {/* Expérience Sur-Mesure */}
-              <div style={styles.featureItem}>
-                <div style={styles.iconWrapper}>
-                  <HeartHandshake size={36} color="#B88E7D" strokeWidth={1.2} />
-                </div>
-                <h4 style={styles.featureTitle}>Accompagnement</h4>
-                <p style={styles.featureText}>
-                  Un diagnostic personnalisé pour répondre précisément aux
-                  besoins uniques de votre peau et de votre corps.
-                </p>
-                <a href="#" style={styles.readMoreLink}>
-                  EN SAVOIR PLUS
-                </a>
-              </div>
-            </div>
+      <div
+        className="about-container"
+        style={styles.container}
+      >
+        {/* COLONNE GAUCHE : PHOTOS DE L'INSTITUT */}
+        <div
+          className={`about-left-column animate-fade-up delay-1 ${
+            isVisible ? "visible" : ""
+          }`}
+          style={styles.leftColumn}
+        >
+          {/* Image principale */}
+          <div
+            className="main-image-wrapper"
+            style={styles.mainImageWrapper}
+          >
+            <img
+              src="/ab.jpg"
+              alt="Soin du visage et moment de détente"
+              style={styles.mainImage}
+              loading="lazy"
+            />
           </div>
 
-          {/* Colonne Droite - Présentation & Signature */}
-          <div className="about-right-column" style={styles.rightColumn}>
-            <span style={styles.subtitle}>À Propos de Nous</span>
-            <h2 className="main-title" style={styles.mainTitle}>
-              Un Sanctuaires de Sérénité Dédié à Votre Beauté
-            </h2>
-
-            <p style={styles.paragraph}>
-              Au cœur de notre institut, nous concevons le bien-être comme un
-              art de vivre. Secret Beauty & Spa est né de la volonté d'offrir
-              une parenthèse de douceur loin du stress quotidien.
-            </p>
-
-            <p style={styles.paragraph}>
-              Chaque rituel est méticuleusement préparé pour répondre au slogan
-              « Du Soin au Besoin ». Nos praticiennes expérimentées utilisent
-              des gestes précis et des soins de haute qualité pour révéler votre
-              éclat naturel.
-            </p>
-
-            {/* Pied de section : Nom & Signature */}
-            <div className="signature-row" style={styles.signatureRow}>
-              <div>
-                <h5 style={styles.authorName}>L'Équipe Institut</h5>
-                <span style={styles.authorRole}>
-                  Maison Secret Beauty & Spa
-                </span>
-              </div>
-              <div style={styles.signatureGraphic}>Secret Beauty & Spa</div>
-            </div>
+          {/* Image secondaire */}
+          <div
+            className="overlay-image-card"
+            style={styles.overlayImageCard}
+          >
+            <img
+              src="/ab2.jpeg"
+              alt="Massage relaxant aux pierres chaudes"
+              style={styles.overlayImage}
+              loading="lazy"
+            />
           </div>
         </div>
-      </section>
 
-      {/* SECTION 2: Notre Philosophie */}
-      <section className="story-section" style={styles.storySection}>
-        <div className="story-container" style={styles.storyContainer}>
-          {/* Bloc Texte */}
-          <div className="story-text-card" style={styles.storyTextCard}>
-            <span style={styles.subtitle}>Notre Philosophie</span>
-            <h2 className="story-title" style={styles.storyTitle}>
-              Une Palette de Massages et Traitments Esthétiques
-            </h2>
+        {/* COLONNE DROITE : PRÉSENTATION */}
+        <div
+          className={`about-right-column animate-fade-up delay-2 ${
+            isVisible ? "visible" : ""
+          }`}
+          style={styles.rightColumn}
+        >
+          <span style={styles.subtitle}>
+            À propos de Secret Beauty &amp; Spa
+          </span>
 
-            <p style={styles.paragraph}>
-              Guidés par l'exigence du détail et l'écoute attentive, nous
-              proposons une large carte de soins allant des rituels relaxation
-              aux soins esthétiques avancés.
-            </p>
+          <h2 className="main-title" style={styles.mainTitle}>
+            Votre beauté, notre passion.
+          </h2>
 
-            <p style={styles.paragraph}>
-              Que ce soit pour préparer un événement particulier, vous détendre
-              après une longue semaine ou prendre soin de vous régulièrement,
-              notre centre s'adapte à vos besoins.
-            </p>
+          {/* Séparateur décoratif */}
+          <div style={styles.dividerContainer}>
+            <span style={styles.dottedLine}>- - - - - -</span>
 
-            <p style={styles.paragraph}>
-              Laissez-vous transporter par une atmosphère apaisante et des
-              senteurs délicates pensées pour le bien-être de vos sens.
-            </p>
-
-            <a
-              href="https://wa.me/221776913230"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="story-button"
-              style={styles.storyButton}
+            <svg
+              width="26"
+              height="20"
+              viewBox="0 0 24 20"
+              fill="#6C534E"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ display: "block" }}
+              aria-hidden="true"
             >
-              PRENDRE RENDEZ-VOUS
-            </a>
+              <path d="M12 0C9.5 6 9.5 14 12 20C14.5 14 14.5 6 12 0Z" />
+              <path d="M11 6C6 2 2 4 1 11C6 11 10 9 11.5 6Z" />
+              <path d="M13 6C18 2 22 4 23 11C18 11 14 9 12.5 6Z" />
+            </svg>
+
+            <span style={styles.dottedLine}>- - - - - -</span>
           </div>
 
-          {/* Collage de photos */}
-          <div className="story-image-collage" style={styles.storyImageCollage}>
-            <div
-              className="photo-top-left"
-              style={{ ...styles.photoFrame, ...styles.photoTopLeft }}
-            >
-              <img
-                src="/ab2.jpeg"
-                alt="Massage apaisant"
-                style={styles.collageImg}
-              />
-            </div>
+          <p style={styles.paragraph}>
+            Bienvenue chez Secret Beauty &amp; Spa, votre espace
+            dédié à la beauté et au bien-être à Dakar, au Sénégal.
+            Nous croyons que prendre soin de soi est bien plus
+            qu'une simple routine : c'est un moment privilégié
+            pour se ressourcer, retrouver confiance en soi et
+            révéler sa beauté naturelle.
+          </p>
 
-            <div
-              className="photo-right"
-              style={{ ...styles.photoFrame, ...styles.photoRight }}
-            >
-              <img
-                src="/ab3.jpg"
-                alt="Soin du visage"
-                style={styles.collageImg}
-              />
-            </div>
+          <blockquote style={styles.quoteBlock}>
+            « La véritable beauté commence lorsque l'on prend
+            le temps de prendre soin de soi. Offrez-vous un
+            instant de détente, de douceur et de bien-être. »
+          </blockquote>
 
-            <div
-              className="photo-bottom-center"
-              style={{ ...styles.photoFrame, ...styles.photoBottomCenter }}
-            >
-              <img
-                src="/ab4.jpg"
-                alt="Espace relaxation Spa"
-                style={styles.collageImg}
-              />
-            </div>
-          </div>
+          <p style={styles.paragraph}>
+            Des soins de beauté aux massages relaxants, nous
+            souhaitons vous offrir une expérience agréable
+            dans une atmosphère accueillante et apaisante.
+            Nous sommes à votre écoute pour vous accompagner
+            dans le choix des soins adaptés à vos envies et
+            à vos besoins.
+          </p>
+
+          <a
+            href="https://wa.me/221776913230?text=Bonjour%20Secret%20Beauty%20%26%20Spa%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20vos%20prestations."
+            target="_blank"
+            rel="noopener noreferrer"
+            style={styles.button}
+          >
+            <span>DÉCOUVRIR NOS SOINS</span>
+            <ArrowRight size={16} />
+          </a>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 
-// Styles en ligne
 const styles: { [key: string]: React.CSSProperties } = {
-  pageWrapper: {
-    backgroundColor: "#ffffff",
-    fontFamily: "var(--font-playfair), 'Playfair Display', serif",
-    color: "#2A2421",
-    width: "100%",
-    overflowX: "hidden",
-  },
   section: {
     padding: "80px 20px",
-    width: "100%",
-    boxSizing: "border-box",
-  },
-  container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    display: "flex",
-    gap: "60px",
-    alignItems: "flex-start",
-  },
-  leftColumn: {
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    gap: "40px",
-    width: "100%",
-  },
-  rightColumn: {
-    flex: "1",
-    paddingLeft: "20px",
-    width: "100%",
-  },
-  /* Styles Carte Vidéo */
-  videoCard: {
-    display: "flex",
     backgroundColor: "#ffffff",
-    boxShadow: "0 10px 30px rgba(42, 36, 33, 0.06)",
-    borderRadius: "6px",
+    fontFamily: "'Playfair Display', Georgia, serif",
+    color: "#2A2421",
     overflow: "hidden",
   },
-  videoThumbnail: {
-    position: "relative",
-    width: "45%",
-    minHeight: "180px",
-  },
-  thumbnailImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  playButton: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "46px",
-    height: "46px",
-    borderRadius: "50%",
-    backgroundColor: "#E2BAA9",
-    border: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    boxShadow: "0 4px 12px rgba(226, 186, 169, 0.5)",
-  },
-  videoCardContent: {
-    width: "55%",
-    padding: "30px 25px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  cardTitle: {
-    fontSize: "22px",
-    fontWeight: "normal",
-    margin: "0 0 12px 0",
-    color: "#2A2421",
-  },
-  cardText: {
-    fontSize: "13px",
-    lineHeight: "1.6",
-    color: "#666666",
-    margin: "0 0 15px 0",
-    fontFamily: "sans-serif",
-  },
-  readMoreLink: {
-    color: "#B88E7D",
-    fontSize: "12px",
-    fontWeight: "600",
-    letterSpacing: "1px",
-    textDecoration: "none",
-    display: "inline-block",
-  },
-  /* Grille des caractéristiques */
-  featuresGrid: {
-    display: "flex",
-    gap: "30px",
-  },
-  featureItem: {
-    flex: "1",
-  },
-  iconWrapper: {
-    marginBottom: "15px",
-  },
-  featureTitle: {
-    fontSize: "20px",
-    fontWeight: "normal",
-    margin: "0 0 12px 0",
-    color: "#2A2421",
-  },
-  featureText: {
-    fontSize: "13px",
-    lineHeight: "1.6",
-    color: "#666666",
-    margin: "0 0 15px 0",
-    fontFamily: "sans-serif",
-  },
-  /* Textes Généraux */
-  subtitle: {
-    color: "#B88E7D",
-    fontSize: "14px",
-    fontWeight: "600",
-    display: "block",
-    marginBottom: "10px",
-    textTransform: "uppercase",
-    letterSpacing: "1px",
-  },
-  mainTitle: {
-    fontSize: "38px",
-    fontWeight: "normal",
-    lineHeight: "1.25",
-    margin: "0 0 25px 0",
-    color: "#2A2421",
-  },
-  paragraph: {
-    fontSize: "13px",
-    lineHeight: "1.8",
-    color: "#555555",
-    marginBottom: "20px",
-    fontFamily: "sans-serif",
-  },
-  signatureRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "35px",
-    paddingTop: "10px",
-  },
-  authorName: {
-    fontSize: "18px",
-    fontWeight: "normal",
-    margin: "0 0 4px 0",
-    color: "#2A2421",
-  },
-  authorRole: {
-    fontSize: "12px",
-    color: "#B88E7D",
-    fontFamily: "sans-serif",
-    fontWeight: "500",
-  },
-  signatureGraphic: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "22px",
-    fontStyle: "italic",
-    color: "#B88E7D",
-    opacity: 0.8,
-  },
 
-  /* SECTION 2: OUR STORY STYLES */
-  storySection: {
-    padding: "100px 20px",
-    backgroundColor: "#FAF7F5",
-    width: "100%",
-    boxSizing: "border-box",
-  },
-  storyContainer: {
-    maxWidth: "1200px",
+  container: {
+    maxWidth: "1140px",
     margin: "0 auto",
     display: "flex",
-    position: "relative",
     alignItems: "center",
-    width: "100%",
-    boxSizing: "border-box",
+    gap: "50px",
   },
-  storyTextCard: {
-    backgroundColor: "#ffffff",
-    padding: "50px 50px 30px 50px",
-    boxShadow: "0 10px 40px rgba(42, 36, 33, 0.05)",
-    width: "520px",
+
+  /* COLONNE GAUCHE */
+  leftColumn: {
+    position: "relative",
+    width: "50%",
+    minHeight: "520px",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+
+  mainImageWrapper: {
+    width: "78%",
+    height: "530px",
+    borderRadius: "2px",
+    overflow: "hidden",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
     zIndex: 2,
-    position: "relative",
-    borderRadius: "4px",
   },
-  storyTitle: {
-    fontSize: "36px",
-    fontWeight: "normal",
-    lineHeight: "1.2",
-    margin: "0 0 25px 0",
-    color: "#2A2421",
-  },
-  storyButton: {
-    display: "inline-block",
-    backgroundColor: "#2A2421",
-    color: "#ffffff",
-    border: "none",
-    padding: "16px 32px",
-    fontSize: "12px",
-    fontWeight: "600",
-    letterSpacing: "1.5px",
-    cursor: "pointer",
-    marginTop: "15px",
-    transform: "translateY(25px)",
-    borderRadius: "20px",
-    textDecoration: "none",
-  },
-  storyImageCollage: {
-    flex: 1,
-    position: "relative",
-    height: "550px",
-    marginLeft: "-40px",
-    boxSizing: "border-box",
-  },
-  photoFrame: {
-    position: "absolute",
-    backgroundColor: "#ffffff",
-    padding: "12px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    boxSizing: "border-box",
-    borderRadius: "4px",
-  },
-  collageImg: {
+
+  mainImage: {
     width: "100%",
     height: "100%",
     objectFit: "cover",
     display: "block",
   },
-  photoTopLeft: {
-    top: 0,
-    left: "60px",
-    width: "270px",
-    height: "270px",
-    zIndex: 1,
-  },
-  photoRight: {
-    top: "80px",
-    right: 0,
-    width: "280px",
-    height: "290px",
-    zIndex: 2,
-  },
-  photoBottomCenter: {
-    bottom: 0,
-    left: "150px",
-    width: "240px",
-    height: "250px",
+
+  overlayImageCard: {
+    position: "absolute",
+    bottom: "60px",
+    left: "-20px",
+    width: "290px",
+    height: "185px",
+    borderRadius: "2px",
+    overflow: "hidden",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.18)",
+    border: "6px solid #ffffff",
     zIndex: 3,
+  },
+
+  overlayImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+
+  /* COLONNE DROITE */
+  rightColumn: {
+    width: "50%",
+    paddingLeft: "20px",
+    boxSizing: "border-box",
+  },
+
+  subtitle: {
+    fontSize: "15px",
+    fontWeight: "700",
+    color: "#6C534E",
+    letterSpacing: "0.5px",
+    display: "block",
+    marginBottom: "12px",
+    fontFamily: "system-ui, -apple-system, sans-serif",
+  },
+
+  mainTitle: {
+    fontSize: "42px",
+    fontWeight: "600",
+    lineHeight: "1.2",
+    color: "#544B45",
+    margin: "0 0 16px 0",
+    letterSpacing: "-0.5px",
+  },
+
+  dividerContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    marginBottom: "22px",
+  },
+
+  dottedLine: {
+    color: "#C19A90",
+    fontSize: "12px",
+    letterSpacing: "2px",
+  },
+
+  paragraph: {
+    fontSize: "14px",
+    lineHeight: "1.8",
+    color: "#776E65",
+    fontFamily: "system-ui, -apple-system, sans-serif",
+    margin: "0 0 25px 0",
+  },
+
+  quoteBlock: {
+    borderLeft: "2px solid #544B45",
+    paddingLeft: "20px",
+    margin: "0 0 30px 0",
+    fontSize: "15px",
+    fontStyle: "italic",
+    lineHeight: "1.8",
+    color: "#544B45",
+  },
+
+  button: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "10px",
+    backgroundColor: "#6C534E",
+    color: "#ffffff",
+    padding: "14px 32px",
+    borderRadius: "25px",
+    fontSize: "13px",
+    fontWeight: "600",
+    textDecoration: "none",
+    letterSpacing: "0.5px",
+    fontFamily: "system-ui, -apple-system, sans-serif",
+    boxShadow: "0 4px 15px rgba(108, 83, 78, 0.25)",
   },
 };
 
